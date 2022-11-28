@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Unicorn.Data;
 using Unicorn.Models.Enums;
+using Unicorn.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<UnicornContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("UnicornContext") ?? throw new InvalidOperationException("Connection string 'UnicornContext' not found.")));
 
+builder.Services.AddScoped<SellerService>();
 
 var app = builder.Build();
 

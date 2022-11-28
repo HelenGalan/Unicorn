@@ -1,8 +1,65 @@
-﻿
+﻿@model IEnumerable<Unicorn.Models.Seller>
+<!-- declaracao do objeto model que corresponde ao ojeto que passamos como argumento no metodo view que e uma lista de Seller -->
+<!-- a lista de Seller esta no controller e o metodo e o IActionResultIndex -->
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Sellers";
 }
 
-<h2>Sellers</h2>
+<h2>@ViewData["Title"]</h2>
 
-<p>Sellers Index Page</p>
+<!-- objeto tabela  -->
+<table class="table table-striped table-hover">
+    <!-- cabecalho da tabela -->
+    <thead>
+        <!-- linha do cabecalho da tabela -->
+        <tr class="success">
+            <!-- colunas da tabela -->
+            <th>
+                <!-- pra renderizar o nome baseado no nome da classe, usa-se o DisplayNameFor com a expressao lambda pra pegar o nome -->
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BirthDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BaseSalary)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <!-- corpo da tabela -->
+    <tbody>
+        <!-- pra cada var item na colecao que esta no Model da view -->
+        @foreach (var item in Model)
+        {
+            <!-- vou criar uma linha na tabela -->
+            <tr>
+                <!-- e essa linha tera varias colunas -->
+                <td>
+                    <!-- pra criar o conteudo de cada coluna baseado no objeto item do foreach -->
+                    <!-- precisa usar outro recurso do framework que chama DisplayFor, tambem com a funcao lambda-->
+                @Html.DisplayFor(ModelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(ModelItem => item.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(ModelItem => item.BirthDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(ModelItem => item.BaseSalary)
+                </td>
+                <td>
+                    <!-- -->
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+
+</table>
