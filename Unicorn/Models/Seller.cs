@@ -8,6 +8,7 @@
         public DateTime BirthDate { get; set; }
         public double BaseSalary { get; set; }
         public Department Department { get; set; } //associacao varios para um
+        public int DepartmentId { get; set; } //avisando o EF que esse ID tem que existir pois o tipo int nao pode ser nulo, aqui e a relacao referencial, chave estrangeira
         public ICollection<SalesRecord> SalesRecord { get; set; } = new List<SalesRecord>();
 
         public Seller()
