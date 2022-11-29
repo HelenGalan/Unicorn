@@ -20,5 +20,12 @@ namespace Unicorn.Services
             //vai rodar o acesso ao banco de dados e a aplicacao vai ficar bloqueada esperando essa operacao terminar
             //desta forma o sistema nao tem uma boa performance
         }
+
+        //metodo para inserir no banco de dados um novo vendedor
+        public void Insert (Seller obj)
+        {
+            _context.Add(obj); //adiciona no BD, operacao do EF
+            _context.SaveChanges(); //pra salvar a adicao
+        }
     }
 }

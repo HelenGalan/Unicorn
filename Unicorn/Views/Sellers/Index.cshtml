@@ -7,6 +7,11 @@
 
 <h2>@ViewData["Title"]</h2>
 
+<p>
+    <!-- botao para criar novo vendedor -->
+    <a asp-action="Create" class="btn btn-outline-primary">Create New</a>
+</p>
+
 <!-- objeto tabela  -->
 <table class="table table-striped table-hover">
     <!-- cabecalho da tabela -->
@@ -27,6 +32,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.BaseSalary)
             </th>
+            <!-- pra ter mais um espaco de titulo, th abrindo e fechando -->
             <th></th>
         </tr>
     </thead>
@@ -53,7 +59,9 @@
                     @Html.DisplayFor(ModelItem => item.BaseSalary)
                 </td>
                 <td>
-                    <!-- -->
+                    <!-- links para editar, detalhes e deletar -->
+                    <!-- tag helper asp-action para acao que esta no controlador -->
+                    <!-- tag helper route para gerar o link com a acao certa -->
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
                     <a asp-action="Details" asp-route-id="@item.Id">Details</a>
                     <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>

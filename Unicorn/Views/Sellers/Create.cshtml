@@ -1,0 +1,47 @@
+﻿<!-- essa declaracao diz que essa view tera a disposicao o objeto do tipo Seller -->
+@model Unicorn.Models.Seller
+
+<!-- A view precisa ter exatamente o mesmo nome que a acao no controller -->
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<h4>Seller</h4>
+<hr />
+<!-- o class row do bootstrap vai garantir que esse div vai ocupar a largura da tela -->
+<div class="row">
+    <!-- col md 4 para ocupar um terco da tela -->
+    <!-- 4 porque o boostrap divide a tela em 12 partes, ou seja, 4 partes de 12 -->
+    <div class="col-md-4">
+        <!-- tag de formulario form com tag helper asp-action -->
+        <!-- quando enviar o formulario, vai chamar a acao respectiva, neste caso a Create do metodo POST no controlador -->
+        <form asp-action="Create">
+            <!-- Layout basico de formulario com o class form-group do bootstrap -->
+            <div class="form-group">
+                <!-- aspfor pra definir o que vai aparecer na caixinha de digitacao -->
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <!-- class em ambos e pra definir o estilo do CSS -->
+            </div>
+            <div class="form-group">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="BirthDate" class="control-label"></label>
+                <input asp-for="BirthDate" class="form-control" />
+            </div>            <div class="form-group">
+                <label asp-for="BaseSalary" class="control-label"></label>
+                <input asp-for="BaseSalary" class="form-control" />
+            </div>
+            <!-- criacao do botao para salvar, ou seja, enviar o formulario -->
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-outline-primary" />
+            </div>
+        </form>
+
+    </div>
+
+</div>
