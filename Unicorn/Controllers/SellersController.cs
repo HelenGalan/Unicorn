@@ -46,5 +46,32 @@ namespace Unicorn.Controllers
             return RedirectToAction(nameof(Index)); //redireciona para a acao Index que e inicial do CRUD de vendedores
             //o nameof facilita a manutencao, porque se a string mudar um dia, nao precisa mudar aqui
         }
+
+        //simplesmente abre uma tela de confirmacao, nao deleta de fato
+        public IActionResult Delete (int? id) //o ? quer dizer opcional, entao recebe um int opcional
+        {
+            if (id == null) //testando se o id e nulo, se for nulo, significa que a requisicao foi feita de forma indevida
+            {
+                return NotFound(); //objeto notfounf instancia uma resposta basica mas podemos persinalizar para uma pagina de erro
+            }
+
+            var obj = _sellerService.FindById(id.Value); //pegar o objeto que estou mandando deletar, no banco de dados
+            if (obj == null)
+            {
+                return NotFound(); //se o ojjeto for nulo significa que nao existe, entao tambem retorna notfound
+            }
+
+            //agora sim se tudo deu certo, retorna a view passando o objeto como argumento
+            return View(obj);
+        }
+
+        // acao que de fato deleta quando se clica no botao delete da tela de confirmacao
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Delete (int id)
+        { 
+            _sellerService.Remove(id); //deletou o vendedor
+            return RedirectToAction(nameof(Index)); //depois que deletou, vai redirecionar pra tela inicial de listagem vendedor do CRUD
+        }
     }
 }

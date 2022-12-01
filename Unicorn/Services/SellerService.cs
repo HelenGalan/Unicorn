@@ -27,5 +27,19 @@ namespace Unicorn.Services
             _context.Add(obj); //adiciona no BD, operacao do EF
             _context.SaveChanges(); //pra salvar a adicao
         }
+
+        //selecionar o objeto para proceder com a delecao
+        public Seller FindById(int id)
+        {
+            return _context.Seller.FirstOrDefault(obj => obj.Id == id);
+        }
+
+        //depois de selecionar, deletar esse objeto
+        public void Remove(int id)
+        {
+            var obj = _context.Seller.Find(id); //implementacao baseada no scaffolding, chamando o objeto
+            _context.Seller.Remove(obj); //aqui apenas remove o objeto do dbset
+            _context.SaveChanges(); //efetivar no banco de dados
+        }
     }
 }
