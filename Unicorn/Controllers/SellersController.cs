@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Unicorn.Models;
+using Unicorn.Models.ViewModels;
 using Unicorn.Services;
 
 namespace Unicorn.Controllers
@@ -7,10 +8,12 @@ namespace Unicorn.Controllers
     public class SellersController : Controller
     {
         private readonly SellerService _sellerService; //declaracao da dependencia para o servico SellerService
+        private readonly DepartmentService _departmentService; //dependencia para o servico de DepartmentService
 
-        public SellersController(SellerService sellerService) //construtor para injetar a dependencia
+        public SellersController(SellerService sellerService, DepartmentService departmentService) //construtor para injetar a dependencia no objeto
         {
             _sellerService = sellerService;
+            _departmentService = departmentService;
         }
 
         public IActionResult Index() //chamei o controlador
@@ -22,8 +25,13 @@ namespace Unicorn.Controllers
 
         public IActionResult Create()
         {
-            //so retorna a view chamada Create
-            return View();
+            //primeiro precisa carregar os departamentos, entao usa o FindAll pra ele buscar no BD todos os departamentos no servico que a gente acabou de criar
+            var departments = _departmentService.FindAll();
+            //Instanciar o objeto do ViewModel
+            var viewModel = new SellerFormViewModel { Departments= departments };
+            //passa o objeto viewModel para a view
+            return View(viewModel);
+            //agora a tela de cadastro quando for acionada pela primeira vez, vai receber o objeto viewModel com os departamentos populados
         }
 
         [HttpPost] //anotacao para indicar que essa acao e uma acao de post

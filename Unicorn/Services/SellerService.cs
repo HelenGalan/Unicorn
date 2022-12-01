@@ -24,7 +24,6 @@ namespace Unicorn.Services
         //metodo para inserir no banco de dados um novo vendedor
         public void Insert (Seller obj)
         {
-            obj.Department = _context.Department.First();
             _context.Add(obj); //adiciona no BD, operacao do EF
             _context.SaveChanges(); //pra salvar a adicao
         }
