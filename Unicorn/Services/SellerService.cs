@@ -1,4 +1,5 @@
-﻿using Unicorn.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using Unicorn.Data;
 using Unicorn.Models;
 
 namespace Unicorn.Services
@@ -31,7 +32,7 @@ namespace Unicorn.Services
         //selecionar o objeto para proceder com a delecao
         public Seller FindById(int id)
         {
-            return _context.Seller.FirstOrDefault(obj => obj.Id == id);
+            return _context.Seller.Include(obj => obj.Department).FirstOrDefault(obj => obj.Id == id);
         }
 
         //depois de selecionar, deletar esse objeto

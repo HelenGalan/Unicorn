@@ -1,0 +1,55 @@
+﻿@model Unicorn.Models.Seller
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<!--copiado da View Delete, pois e parecido -->
+
+<div>
+    <h4>Details</h4>
+    <hr />
+    <!-- elemento dl para listar os campos desse objeto -->
+    <dl>
+        <!-- dt pra mostrat o nome do campo-->
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <!-- dd pra mostrat o valor do campo-->
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.BirthDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.BirthDate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.BaseSalary)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.BaseSalary)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Department)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Department.Name)
+        </dd>
+    </dl>
+</div>
+
+<!-- botoes de editar e voltar para a listagem -->
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> <!-- link para editar -->
+    <a asp-action="Index">Back to the list</a>
+</div>
