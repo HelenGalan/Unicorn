@@ -2,6 +2,7 @@
 using Unicorn.Models;
 using Unicorn.Models.ViewModels;
 using Unicorn.Services;
+using Unicorn.Services.Exceptions;
 
 namespace Unicorn.Controllers
 {
@@ -91,6 +92,50 @@ namespace Unicorn.Controllers
 
             //agora sim se tudo deu certo, retorna a view passando o objeto como argumento
             return View(obj);
+        }
+
+        public IActionResult Edit(int? id) //essa acao serve pra abrir a tela pra editar o vendedor
+        {
+            if (id == null) //testei se o ID nao existe
+            {
+                return NotFound();
+            }
+
+            var obj = _sellerService.FindById(id.Value);
+            if (obj == null) //testei se e nulo
+            {
+                return NotFound();
+            }
+
+            //se tudo passar, ai sim abre a tela de edicao, pra isso precisa carregar os departamentos pra povoar a caixa de selecao
+            List<Department> departments = _departmentService.FindAll();
+            SellerFormViewModel viewModel = new SellerFormViewModel { Seller = obj, Departments = departments};
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(int id, Seller seller)
+        {
+            if (id != seller.Id) //testar se o id que veio no parametro do metodo for diferente do seller.id, da url da requisicao, significa que algo esta errado
+            {
+                return BadRequest();
+            } //se passar, significa que esta ok
+
+            try
+            {
+                _sellerService.Update(seller);
+                return RedirectToAction(nameof(Index)); //redireciona para a pagina iniciar do CRUD
+            }
+
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+            catch(DbConcurrencyException)
+            {
+                return BadRequest();
+            }
         }
     }
 }

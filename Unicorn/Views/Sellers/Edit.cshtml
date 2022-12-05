@@ -1,0 +1,56 @@
+﻿<!-- essa declaracao diz que essa view tera a disposicao o objeto do tipo Seller -->
+@model Unicorn.Models.ViewModels.SellerFormViewModel
+
+<!-- A view precisa ter exatamente o mesmo nome que a acao no controller -->
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<h4>Seller</h4>
+<hr />
+<!-- o class row do bootstrap vai garantir que esse div vai ocupar a largura da tela -->
+<div class="row">
+    <!-- col md 4 para ocupar um terco da tela -->
+    <!-- 4 porque o boostrap divide a tela em 12 partes, ou seja, 4 partes de 12 -->
+    <div class="col-md-4">
+        <!-- tag de formulario form com tag helper asp-action -->
+        <!-- quando enviar o formulario, vai chamar a acao respectiva, neste caso a Create do metodo POST no controlador -->
+        <form asp-action="Edit">
+            <input type="hidden" asp-for="Seller.Id" /> <!-- campo oculto com o ID do vendedor -->
+            <!-- Layout basico de formulario com o class form-group do bootstrap -->
+            <div class="form-group">
+                <!-- aspfor pra definir o que vai aparecer na caixinha de digitacao -->
+                <label asp-for="Seller.Name" class="control-label"></label>
+                <input asp-for="Seller.Name" class="form-control" />
+                <!-- class em ambos e pra definir o estilo do CSS -->
+            </div>
+            <div class="form-group">
+                <label asp-for="Seller.Email" class="control-label"></label>
+                <input asp-for="Seller.Email" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Seller.BirthDate" class="control-label"></label>
+                <input asp-for="Seller.BirthDate" class="form-control" />
+            </div>            <div class="form-group">
+                <label asp-for="Seller.BaseSalary" class="control-label"></label>
+                <input asp-for="Seller.BaseSalary" class="form-control" />
+            </div>
+
+            <!-- componente select que monta a caixa de selecao -->
+            <div class="form-group">
+                <label asp-for="Seller.DepartmentId" class="control-label"></label>
+                <select asp-for="Seller.DepartmentId" asp-items="@(new SelectList(Model.Departments,"Id",
+"Name"))" class="form-control"></select> <!-- tag helper aspitens que constroi os itens da caixa de selecao com base na colecao que voce passar-->
+            </div> <!--model.departments e a fonte de dados da lista com a chave e o que aparece na caixa-->
+            <!-- criacao do botao para salvar, ou seja, enviar o formulario -->
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-outline-primary" /> <!-- e igual o Create, com algumas alteracoes-->
+            </div>
+        </form>
+
+    </div>
+
+</div>
+

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Unicorn.Data;
 using Unicorn.Models;
+using Unicorn.Services.Exceptions;
 
 namespace Unicorn.Services
 {
@@ -41,6 +42,25 @@ namespace Unicorn.Services
             var obj = _context.Seller.Find(id); //implementacao baseada no scaffolding, chamando o objeto
             _context.Seller.Remove(obj); //aqui apenas remove o objeto do dbset
             _context.SaveChanges(); //efetivar no banco de dados
+        }
+
+        //metodo pra atualizar um objeto do tipo seller
+        public void Update(Seller obj)
+        {
+            //testando se existe o id desse objeto no BD
+            if (!_context.Seller.Any(x => x.Id == obj.Id)) //se nao existir, lanca a excecao
+            {
+                throw new NotFoundException("Id not found!");
+            } //se passar por esse if, significa que ja existe o objeto la
+            try //quando chama a operacao de atualizar no banco de dados, pode ocorrer uma excecao de conflito de concorrencia
+            {
+                _context.Update(obj); //entao atualiza
+                _context.SaveChanges();
+            }
+            catch(DbUpdateConcurrencyException e) //se acontecer essa excecao do EF
+            {
+                throw new DbConcurrencyException(e.Message); //relanca a excecao em nivel de servico e colocar a mensagem que veio do BD
+            } //importante para segregar as camadas e respeitar a arquitetura (controlador conversa com a camada de servico e excecoes od nivel de acesso a dados sao capturados pelo servico e relancadas como excecoes de servico para o controlador)
         }
     }
 }
