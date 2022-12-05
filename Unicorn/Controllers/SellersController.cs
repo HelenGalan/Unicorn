@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 using Unicorn.Models;
 using Unicorn.Models.ViewModels;
 using Unicorn.Services;
@@ -53,13 +54,13 @@ namespace Unicorn.Controllers
         {
             if (id == null) //testando se o id e nulo, se for nulo, significa que a requisicao foi feita de forma indevida
             {
-                return NotFound(); //objeto notfounf instancia uma resposta basica mas podemos persinalizar para uma pagina de erro
+                return RedirectToAction(nameof(Error), new { message = "Id not provided!" }); //objeto notfounf instancia uma resposta basica mas podemos persinalizar para uma pagina de erro
             }
 
             var obj = _sellerService.FindById(id.Value); //pegar o objeto que estou mandando deletar, no banco de dados
             if (obj == null)
             {
-                return NotFound(); //se o ojjeto for nulo significa que nao existe, entao tambem retorna notfound
+                return RedirectToAction(nameof(Error), new { message = "Id not found!" }); //se o ojjeto for nulo significa que nao existe, entao tambem retorna notfound
             }
 
             //agora sim se tudo deu certo, retorna a view passando o objeto como argumento
@@ -81,13 +82,13 @@ namespace Unicorn.Controllers
 
             if (id == null) //testando se o id e nulo, se for nulo, significa que a requisicao foi feita de forma indevida
             {
-                return NotFound(); //objeto notfounf instancia uma resposta basica mas podemos persinalizar para uma pagina de erro
+                return RedirectToAction(nameof(Error), new { message = "Id not provided!" }); //objeto notfounf instancia uma resposta basica mas podemos persinalizar para uma pagina de erro
             }
 
             var obj = _sellerService.FindById(id.Value); //pegar o objeto que estou mandando deletar, no banco de dados
             if (obj == null)
             {
-                return NotFound(); //se o ojjeto for nulo significa que nao existe, entao tambem retorna notfound
+                return RedirectToAction(nameof(Error), new { message = "Id not found!" }); ; //se o ojjeto for nulo significa que nao existe, entao tambem retorna notfound
             }
 
             //agora sim se tudo deu certo, retorna a view passando o objeto como argumento
@@ -98,13 +99,13 @@ namespace Unicorn.Controllers
         {
             if (id == null) //testei se o ID nao existe
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id not provided!" });
             }
 
             var obj = _sellerService.FindById(id.Value);
             if (obj == null) //testei se e nulo
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id not found!" });
             }
 
             //se tudo passar, ai sim abre a tela de edicao, pra isso precisa carregar os departamentos pra povoar a caixa de selecao
@@ -119,7 +120,7 @@ namespace Unicorn.Controllers
         {
             if (id != seller.Id) //testar se o id que veio no parametro do metodo for diferente do seller.id, da url da requisicao, significa que algo esta errado
             {
-                return BadRequest();
+                return RedirectToAction(nameof(Error), new { message = "Id doens't match!" });
             } //se passar, significa que esta ok
 
             try
@@ -128,14 +129,24 @@ namespace Unicorn.Controllers
                 return RedirectToAction(nameof(Index)); //redireciona para a pagina iniciar do CRUD
             }
 
-            catch (NotFoundException)
+            catch (ApplicationException e)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = e.Message });
             }
-            catch(DbConcurrencyException)
+            //catch(DbConcurrencyException e) //commentei porque o redirecionamento assima ja trata esse tambem
+            //{
+            //    return RedirectToAction(nameof(Error), new { message = "Id not found!" });
+            //}
+        }
+
+        public IActionResult Error (string message) //acao de erro
+        {
+            var viewModel = new ErrorViewModel
             {
-                return BadRequest();
-            }
+                Message = message,
+                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier //macete pra pegar o ID interno da requisicao
+            };
+            return View(viewModel);
         }
     }
 }
