@@ -1,11 +1,22 @@
-﻿namespace Unicorn.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Unicorn.Models
 {
     public class Seller
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        
+        [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
+        
+        [Display(Name = "Birth Date")]
+        [DataType(DataType.Date)]
+        //[DisplayFormat(DataFormatString ="{0:dd/MM/yyyy}")] nao funciona por causa do Globalization que nao esta feito
         public DateTime BirthDate { get; set; }
+
+        [Display(Name = "Base Salary")]
+        [DisplayFormat(DataFormatString = "{0:F2}")] //para ter duas casas decimais (zero indica o valor do atributo)
         public double BaseSalary { get; set; }
         public Department Department { get; set; } //associacao varios para um
         public int DepartmentId { get; set; } //avisando o EF que esse ID tem que existir pois o tipo int nao pode ser nulo, aqui e a relacao referencial, chave estrangeira
