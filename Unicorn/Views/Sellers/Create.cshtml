@@ -19,22 +19,28 @@
         <!-- quando enviar o formulario, vai chamar a acao respectiva, neste caso a Create do metodo POST no controlador -->
         <form asp-action="Create">
             <!-- Layout basico de formulario com o class form-group do bootstrap -->
+            <div asp-validation-summary="All" class="text-danger"></div>
             <div class="form-group">
                 <!-- aspfor pra definir o que vai aparecer na caixinha de digitacao -->
                 <label asp-for="Seller.Name" class="control-label"></label>
                 <input asp-for="Seller.Name" class="form-control" />
                 <!-- class em ambos e pra definir o estilo do CSS -->
+                <span asp-validation-for="Seller.Name" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Seller.Email" class="control-label"></label>
                 <input asp-for="Seller.Email" class="form-control" />
+                <span asp-validation-for="Seller.Email" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Seller.BirthDate" class="control-label"></label>
                 <input asp-for="Seller.BirthDate" class="form-control" />
-            </div>            <div class="form-group">
+                <span asp-validation-for="Seller.BirthDate" class="text-danger"></span>
+            </div>            
+            <div class="form-group">
                 <label asp-for="Seller.BaseSalary" class="control-label"></label>
                 <input asp-for="Seller.BaseSalary" class="form-control" />
+                <span asp-validation-for="Seller.BaseSalary" class="text-danger"></span>
             </div>
 
             <!-- componente select que monta a caixa de selecao -->
@@ -52,3 +58,10 @@
     </div>
 
 </div>
+
+<!-- esse trecho de codigo vai habilitar a validacao por meio de java script-->
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

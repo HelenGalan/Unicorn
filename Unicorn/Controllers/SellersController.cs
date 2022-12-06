@@ -43,6 +43,14 @@ namespace Unicorn.Controllers
         //recebe o objeto vendedor que veio na requisicao e instancia
         public IActionResult Create(Seller seller)
         {
+            //vai ficar aqui nesse if enquanto o usuario nao preencher direito o formulario
+            //testar se seller e valido
+            //teste se o modelo foi validado, se nao for, retorna a mesma view ate o usuario consertar
+            //esse teste e pra garantir se o java script estiver desativado no navegador
+            if (!ModelState.IsValid)
+            {
+                return View(seller);
+            }
             //implementacao a acao de inserir no banco de dados
             _sellerService.Insert(seller);
             return RedirectToAction(nameof(Index)); //redireciona para a acao Index que e inicial do CRUD de vendedores
@@ -118,6 +126,11 @@ namespace Unicorn.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, Seller seller)
         {
+            //se nao for valido, retorna a mesma view com o objeto
+            if (!ModelState.IsValid)
+            {
+                return View(seller);
+            }
             if (id != seller.Id) //testar se o id que veio no parametro do metodo for diferente do seller.id, da url da requisicao, significa que algo esta errado
             {
                 return RedirectToAction(nameof(Error), new { message = "Id doens't match!" });
