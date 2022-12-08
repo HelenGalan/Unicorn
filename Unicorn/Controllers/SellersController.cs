@@ -18,19 +18,19 @@ namespace Unicorn.Controllers
             _departmentService = departmentService;
         }
 
-        public IActionResult Index() //chamei o controlador
+        public async Task<IActionResult> Index() //chamei o controlador
         {
-            var list = _sellerService.FindAll(); //o controlador acessou meu model e colocou o dado em "list"
+            var list = await _sellerService.FindAllAsync(); //o controlador acessou meu model e colocou o dado em "list"
             return View(list); //encaminhou os dados para a view
             //dinamica do MVC
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             //primeiro precisa carregar os departamentos, entao usa o FindAll pra ele buscar no BD todos os departamentos no servico que a gente acabou de criar
-            var departments = _departmentService.FindAll();
+            var departments = await _departmentService.FindAllAsync();
             //Instanciar o objeto do ViewModel
-            var viewModel = new SellerFormViewModel { Departments= departments };
+            var viewModel = new SellerFormViewModel { Departments = departments };
             //passa o objeto viewModel para a view
             return View(viewModel);
             //agora a tela de cadastro quando for acionada pela primeira vez, vai receber o objeto viewModel com os departamentos populados
@@ -41,7 +41,7 @@ namespace Unicorn.Controllers
         //CSRF e quando alguem se aproveita da sua sessao de autenticacao e envia dados maliciosos
 
         //recebe o objeto vendedor que veio na requisicao e instancia
-        public IActionResult Create(Seller seller)
+        public async Task<IActionResult> Create(Seller seller)
         {
             //vai ficar aqui nesse if enquanto o usuario nao preencher direito o formulario
             //testar se seller e valido
@@ -49,23 +49,25 @@ namespace Unicorn.Controllers
             //esse teste e pra garantir se o java script estiver desativado no navegador
             if (!ModelState.IsValid)
             {
-                return View(seller);
+                var departments = await _departmentService.FindAllAsync();
+                var viewModel = new SellerFormViewModel { Seller = seller, Departments = departments };
+                return View(viewModel);
             }
             //implementacao a acao de inserir no banco de dados
-            _sellerService.Insert(seller);
+            await _sellerService.InsertAsync(seller);
             return RedirectToAction(nameof(Index)); //redireciona para a acao Index que e inicial do CRUD de vendedores
             //o nameof facilita a manutencao, porque se a string mudar um dia, nao precisa mudar aqui
         }
 
         //simplesmente abre uma tela de confirmacao, nao deleta de fato
-        public IActionResult Delete (int? id) //o ? quer dizer opcional, entao recebe um int opcional
+        public async Task<IActionResult> Delete (int? id) //o ? quer dizer opcional, entao recebe um int opcional
         {
             if (id == null) //testando se o id e nulo, se for nulo, significa que a requisicao foi feita de forma indevida
             {
                 return RedirectToAction(nameof(Error), new { message = "Id not provided!" }); //objeto notfounf instancia uma resposta basica mas podemos persinalizar para uma pagina de erro
             }
 
-            var obj = _sellerService.FindById(id.Value); //pegar o objeto que estou mandando deletar, no banco de dados
+            var obj = await _sellerService.FindByIdAsync(id.Value); //pegar o objeto que estou mandando deletar, no banco de dados
             if (obj == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id not found!" }); //se o ojjeto for nulo significa que nao existe, entao tambem retorna notfound
@@ -78,13 +80,13 @@ namespace Unicorn.Controllers
         // acao que de fato deleta quando se clica no botao delete da tela de confirmacao
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete (int id)
+        public async Task<IActionResult> Delete (int id)
         { 
-            _sellerService.Remove(id); //deletou o vendedor
+            await _sellerService.RemoveAsync(id); //deletou o vendedor
             return RedirectToAction(nameof(Index)); //depois que deletou, vai redirecionar pra tela inicial de listagem vendedor do CRUD
         }
 
-        public IActionResult Details(int? id)
+        public async Task<IActionResult> Details(int? id)
         {
             //mesma logica que o Delete
 
@@ -93,7 +95,7 @@ namespace Unicorn.Controllers
                 return RedirectToAction(nameof(Error), new { message = "Id not provided!" }); //objeto notfounf instancia uma resposta basica mas podemos persinalizar para uma pagina de erro
             }
 
-            var obj = _sellerService.FindById(id.Value); //pegar o objeto que estou mandando deletar, no banco de dados
+            var obj = await _sellerService.FindByIdAsync(id.Value); //pegar o objeto que estou mandando deletar, no banco de dados
             if (obj == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id not found!" }); ; //se o ojjeto for nulo significa que nao existe, entao tambem retorna notfound
@@ -103,33 +105,35 @@ namespace Unicorn.Controllers
             return View(obj);
         }
 
-        public IActionResult Edit(int? id) //essa acao serve pra abrir a tela pra editar o vendedor
+        public async Task<IActionResult> Edit(int? id) //essa acao serve pra abrir a tela pra editar o vendedor
         {
             if (id == null) //testei se o ID nao existe
             {
                 return RedirectToAction(nameof(Error), new { message = "Id not provided!" });
             }
 
-            var obj = _sellerService.FindById(id.Value);
+            var obj = await _sellerService.FindByIdAsync(id.Value);
             if (obj == null) //testei se e nulo
             {
                 return RedirectToAction(nameof(Error), new { message = "Id not found!" });
             }
 
             //se tudo passar, ai sim abre a tela de edicao, pra isso precisa carregar os departamentos pra povoar a caixa de selecao
-            List<Department> departments = _departmentService.FindAll();
+            List<Department> departments = await _departmentService.FindAllAsync();
             SellerFormViewModel viewModel = new SellerFormViewModel { Seller = obj, Departments = departments};
             return View(viewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, Seller seller)
+        public async Task<IActionResult> Edit(int id, Seller seller)
         {
             //se nao for valido, retorna a mesma view com o objeto
             if (!ModelState.IsValid)
             {
-                return View(seller);
+                var departments = await _departmentService.FindAllAsync();
+                var viewModel = new SellerFormViewModel { Seller = seller, Departments = departments };
+                return View(viewModel);
             }
             if (id != seller.Id) //testar se o id que veio no parametro do metodo for diferente do seller.id, da url da requisicao, significa que algo esta errado
             {
@@ -138,7 +142,7 @@ namespace Unicorn.Controllers
 
             try
             {
-                _sellerService.Update(seller);
+                await _sellerService.UpdateAsync(seller);
                 return RedirectToAction(nameof(Index)); //redireciona para a pagina iniciar do CRUD
             }
 
