@@ -39,9 +39,16 @@ namespace Unicorn.Services
         //depois de selecionar, deletar esse objeto
         public async Task RemoveAsync(int id)
         {
-            var obj = await _context.Seller.FindAsync(id); //implementacao baseada no scaffolding, chamando o objeto
-            _context.Seller.Remove(obj); //aqui apenas remove o objeto do dbset
-            await _context.SaveChangesAsync(); //efetivar no banco de dados
+            try
+            {
+                var obj = await _context.Seller.FindAsync(id); //implementacao baseada no scaffolding, chamando o objeto
+                _context.Seller.Remove(obj); //aqui apenas remove o objeto do dbset
+                await _context.SaveChangesAsync(); //efetivar no banco de dados
+            }
+            catch (DbUpdateException e) 
+            {
+                throw new IntegrityException("You can't delete this seller because there are seeling connected!");
+            }
         }
 
         //metodo pra atualizar um objeto do tipo seller

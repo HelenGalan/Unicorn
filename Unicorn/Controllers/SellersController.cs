@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Data;
 using System.Diagnostics;
 using Unicorn.Models;
 using Unicorn.Models.ViewModels;
@@ -81,9 +82,17 @@ namespace Unicorn.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete (int id)
-        { 
-            await _sellerService.RemoveAsync(id); //deletou o vendedor
-            return RedirectToAction(nameof(Index)); //depois que deletou, vai redirecionar pra tela inicial de listagem vendedor do CRUD
+        {
+            try
+            {
+                await _sellerService.RemoveAsync(id); //deletou o vendedor
+                return RedirectToAction(nameof(Index)); //depois que deletou, vai redirecionar pra tela inicial de listagem vendedor do CRUD
+
+            }
+            catch (IntegrityException e)
+            {
+                return RedirectToAction(nameof(Error), new {message = e.Message});
+            }
         }
 
         public async Task<IActionResult> Details(int? id)
